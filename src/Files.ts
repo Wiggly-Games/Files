@@ -2,6 +2,21 @@ import * as fs from "fs";
 
 const fsPromises = fs.promises;
 
+// Creates a new folder on the file system.
+export async function CreateDirectory(path: string){
+    try {
+        await fsPromises.mkdir(path);
+    } catch (exception) {
+        // If it already exists, do nothing
+        if (exception.code == 'EEXIST') {
+
+        } else {
+            // not an eexist exception, re-throw the error
+            throw exception;
+        }
+    }
+}
+
 // Append, adding to the end of a file.
 export async function Append(filePath : string, text : string) {
     await fsPromises.appendFile(filePath, `${text}\n`);
