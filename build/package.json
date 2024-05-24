@@ -1,6 +1,6 @@
 {
     "name": "@wiggly-games/files",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "",
     "main": "Files.js",
     "types": "Files.d.ts",
