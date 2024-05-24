@@ -17,6 +17,11 @@ export async function CreateDirectory(path: string){
     }
 }
 
+// Returns a list of all file names within the parent directory.
+export async function ReadDirectoryFiles(path: string): Promise<string[]> {
+    return await fsPromises.readdir(path);
+}
+
 // Append, adding to the end of a file.
 export async function Append(filePath : string, text : string) {
     await fsPromises.appendFile(filePath, `${text}\n`);
