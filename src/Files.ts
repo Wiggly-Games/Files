@@ -57,6 +57,11 @@ export async function GetAbsolutePath(relativePathFromRoot: string) {
     return Path.join(ROOT, relativePathFromRoot);
 }
 
+// Reads all files located under a directory, non-recursively.
+export async function ReadDirectoryFiles(path: string): Promise<string[]> {
+    return await fsPromises.readdir(path);
+}
+
 // Append, adding to the end of a file.
 export async function Append(filePath : string, text : string) {
     await fsPromises.appendFile(filePath, `${text}\n`);
