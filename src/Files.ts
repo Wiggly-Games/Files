@@ -1,6 +1,12 @@
 import * as fs from "fs";
+import * as Path from "path";
 
 const fsPromises = fs.promises;
+
+const pathToMain = require.main.path;
+
+// Export a variable referring to the root path of the file being run.
+export const ROOT = pathToMain.substring(0, pathToMain.lastIndexOf("\\"));
 
 // Creates a new folder on the file system.
 export async function CreateDirectory(path: string){
@@ -18,6 +24,40 @@ export async function CreateDirectory(path: string){
 }
 
 // Returns a list of all file names within the parent directory.
+export async function GetDescendants(path: string, filter: (file: string)=>boolean): Promise<string[]> {
+    const paths: string[] = [path];
+    let current = 0;
+
+    const results: string[] = [ ];
+    while (current < paths.length) {
+        // Get the current path to look at
+        const currentPath = paths[current];
+        current ++;
+
+        // Read the file type
+        const fileData = await fsPromises.stat(currentPath);
+
+        // If it passes our filter, add the file to the list of results
+        if (filter(currentPath)) {
+            results.push(currentPath);
+        }
+
+        // If it's a directory, recurse down the children of the directory
+        if (fileData.isDirectory()) {
+            const children = await fsPromises.readdir(currentPath);
+            paths.push(...children.map(x => Path.join(currentPath, x)));
+        }
+    }
+
+    return results;
+}
+
+// Returns the absolute path to a file given its relative path from the ROOT folder.
+export async function GetAbsolutePath(relativePathFromRoot: string) {
+    return Path.join(ROOT, relativePathFromRoot);
+}
+
+// Reads all files located under a directory, non-recursively.
 export async function ReadDirectoryFiles(path: string): Promise<string[]> {
     return await fsPromises.readdir(path);
 }
