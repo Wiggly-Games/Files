@@ -6,7 +6,9 @@ const fsPromises = fs.promises;
 const pathToMain = require.main.path;
 
 // Export a variable referring to the root path of the file being run.
-export const ROOT = pathToMain.substring(0, pathToMain.lastIndexOf("\\"));
+// Note: We're using process.cwd() for now, which isn't the best solution.
+// For our purposes, it's probably fine, but may be worth looking into something better later.
+export const ROOT = process.cwd();
 
 // Creates a new folder on the file system.
 export async function CreateDirectory(path: string){
