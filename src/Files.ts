@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as Path from "path";
+import path = require("path");
 
 const fsPromises = fs.promises;
 
@@ -96,4 +97,9 @@ export async function LoadJson(filePath: string, parser?: (this: any, key: strin
     }
 
     return JSON.parse(data, parser);
+}
+
+// Returns the name of a file, without the extension, given its path. 
+export function GetFileName(filePath: string): string {
+    return path.parse(filePath).name;
 }
