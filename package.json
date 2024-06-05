@@ -1,8 +1,8 @@
 {
   "name": "@wiggly-games/files",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "",
-  "main": "srtc/Files.js",
+  "main": "src/Files.js",
   "scripts": {
     "compile": "tsc",
     "dev": "npm run compile && npm start",
