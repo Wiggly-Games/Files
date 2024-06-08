@@ -4,7 +4,7 @@ import path = require("path");
 
 const fsPromises = fs.promises;
 
-const pathToMain = require.main.path;
+type ValidFileType = string | NodeJS.ArrayBufferView | Iterable<string | NodeJS.ArrayBufferView> | AsyncIterable<string | NodeJS.ArrayBufferView>;
 
 // Export a variable referring to the root path of the file being run.
 // Note: We're using process.cwd() for now, which isn't the best solution.
@@ -71,19 +71,19 @@ export async function Append(filePath : string, text : string) {
 }
 
 // Save to a file, deleting the existing contents of the file.
-export async function Overwrite(filePath: string, data: string) {
+export async function Overwrite(filePath: string, data: ValidFileType) {
     await fsPromises.writeFile(filePath, data);
 }
 
 // Read from a file, returning the contents as plain text.
-export async function ReadFile(filePath: string): Promise<string> {
+export async function ReadFile(filePath: string): Promise<Buffer> {
     const contents = await fsPromises.readFile(filePath);
-    return contents.toString();
+    return contents;
 }
 
 // Load JSON data from a file, optionally including a function to be used for parsing records.
 export async function LoadJson(filePath: string, parser?: (this: any, key: string, value: any) => any) {
-    let data: string;
+    let data: Buffer;
     try {
         data = await ReadFile(filePath);
     } catch (e) {
@@ -96,7 +96,7 @@ export async function LoadJson(filePath: string, parser?: (this: any, key: strin
         throw e;
     }
 
-    return JSON.parse(data, parser);
+    return JSON.parse(data.toString(), parser);
 }
 
 // Returns the name of a file, without the extension, given its path. 
