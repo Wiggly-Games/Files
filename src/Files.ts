@@ -103,3 +103,23 @@ export async function LoadJson(filePath: string, parser?: (this: any, key: strin
 export function GetFileName(filePath: string): string {
     return path.parse(filePath).name;
 }
+
+// Returns a function for working with a Read Stream.
+// Opens the read stream, runs the function, then closes the stream and returns the result.
+export async function WithReadStream(filePath: string, f: (stream: fs.ReadStream)=>Promise<any>): Promise<any> {
+    const stream = fs.createReadStream(filePath);
+    const result = await f(stream);
+
+    stream.close();
+    return result;
+}
+
+// Returns a function for working with a Write Stream.
+// Opens the write stream, runs the function, then closes the stream and returns the result.
+export async function WithWriteStream(filePath: string, f: (stream: fs.WriteStream)=>Promise<any>): Promise<any> {
+    const stream = fs.createWriteStream(filePath);
+    const result = await f(stream);
+
+    stream.close();
+    return result;
+}
