@@ -110,7 +110,7 @@ export async function WithReadStream(filePath: string, f: (stream: fs.ReadStream
     const stream = fs.createReadStream(filePath);
     const result = await f(stream);
 
-    stream.close();
+    stream.destroy();
     return result;
 }
 
@@ -120,6 +120,6 @@ export async function WithWriteStream(filePath: string, f: (stream: fs.WriteStre
     const stream = fs.createWriteStream(filePath);
     const result = await f(stream);
 
-    stream.close();
+    stream.end();
     return result;
 }
