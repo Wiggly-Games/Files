@@ -117,9 +117,21 @@ export async function WithReadStream(filePath: string, f: (stream: fs.ReadStream
 // Returns a function for working with a Write Stream.
 // Opens the write stream, runs the function, then closes the stream and returns the result.
 export async function WithWriteStream(filePath: string, f: (stream: fs.WriteStream)=>Promise<any>): Promise<any> {
-    const stream = fs.createWriteStream(filePath);
-    const result = await f(stream);
+    return new Promise<any>(async (fulfill, reject) => {
+        try {
+            const stream = fs.createWriteStream(filePath);
+            const result = await f(stream);
 
-    stream.end();
-    return result;
+            stream.end();
+
+            stream.on('finish', ()=>{
+                fulfill(result);
+            });
+            stream.on('error', (e)=>{
+                reject(e);
+            })
+        } catch(e) {
+            reject(e);
+        }
+    });
 }
