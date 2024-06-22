@@ -114,12 +114,12 @@ export async function WithReadStream(filePath: string, f: (stream: fs.ReadStream
     return result;
 }
 
-// Returns a function for working with a Write Stream.
+// Creates a Write stream with the given options.
 // Opens the write stream, runs the function, then closes the stream and returns the result.
-export async function WithWriteStream(filePath: string, f: (stream: fs.WriteStream)=>Promise<any>): Promise<any> {
+async function GetWriteStream(filePath: string, options: BufferEncoding | Object, f: (stream: fs.WriteStream)=>Promise<any>): Promise<any> {
     return new Promise<any>(async (fulfill, reject) => {
         try {
-            const stream = fs.createWriteStream(filePath);
+            const stream = fs.createWriteStream(filePath, options);
             const result = await f(stream);
 
             stream.end();
@@ -134,4 +134,14 @@ export async function WithWriteStream(filePath: string, f: (stream: fs.WriteStre
             reject(e);
         }
     });
+}
+
+// Returns a function for working with a Write Stream.
+export async function WithWriteStream(filePath: string, f: (stream: fs.WriteStream)=>Promise<any>): Promise<any> {
+    return GetWriteStream(filePath, {flags: 'w'}, f);
+}
+
+// Similar function, but appends data to an existing file.
+export async function WithAppendStream(filePath: string, f: (stream: fs.WriteStream)=>Promise<any>): Promise<any> {
+    return GetWriteStream(filePath, {flags: 'a'}, f);
 }
